@@ -4,17 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "a7276bc1b3d86982",
+        "id": "5552068178567748",
         "type": "tabs",
         "children": [
           {
-            "id": "32d47e9d20b74258",
+            "id": "c8669f179f5b7e3a",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "遗传算法.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "新标签页"
+              "title": "遗传算法"
             }
           }
         ]
@@ -187,8 +191,10 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "5162fd647ad9c410",
+  "active": "c8669f179f5b7e3a",
   "lastOpenFiles": [
+    "遗传算法.md",
+    "分支限界算法-01背包问题.md",
     "未命名.base"
   ]
 }
