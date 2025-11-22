@@ -14,7 +14,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 2
+          fetch-depth: 0
 
       - name: 🐍 设置 Python
         uses: actions/setup-python@v5
@@ -28,14 +28,22 @@ jobs:
         env:
           CNBLOGS_COOKIE: ${{ secrets.CNBLOGS_COOKIE }}
           CNBLOGS_XSRF_TOKEN: ${{ secrets.CNBLOGS_XSRF_TOKEN }}
+          PREV_COMMIT: ${{ github.event.before }}
+          CUR_COMMIT: ${{ github.sha }}
         run: |
-          # 获取本次提交中新增(A)或修改(M)的 blogs/ 下的 .md 文件
+          # 更稳健地获取本次提交中新增(A)或修改(M)的 blogs/ 下的 .md 文件
           echo "🔍 正在检测变更的 Markdown 文件..."
-          files=$(git diff --name-only --diff-filter=AM HEAD~1 HEAD | grep '^blogs/.*\.md$')
-          
+
+          # 处理两种情况：普通 push（有上一个 commit）和初始提交（before 为 000...0）
+          if [ "$PREV_COMMIT" = "0000000000000000000000000000000000000000" ]; then
+            files=$(git ls-tree -r --name-only "$CUR_COMMIT" | grep '^blogs/.*\.md$' || true)
+          else
+            files=$(git diff --name-only --diff-filter=AM "$PREV_COMMIT" "$CUR_COMMIT" | grep '^blogs/.*\.md$' || true)
+          fi
+
           if [ -z "$files" ]; then
-            echo "❌ 未找到符合条件的 .md 文件（新增或修改）"
-            exit 1
+            echo "ℹ️ 未找到符合条件的 .md 文件（新增或修改），跳过发布步骤。"
+            exit 0
           fi
 
           echo "✅ 检测到以下文件："
@@ -47,13 +55,13 @@ jobs:
             if [ -n "$file" ] && [ -f "$file" ]; then
               echo ""
               echo "📤 正在处理: $file"
-              
+
               # 记录发布前的文件状态（用于判断是否注入了 post_id）
               before_hash=$(sha256sum "$file")
-              
+
               # 调用发布脚本
               python scripts/publish_to_cnblogs.py "$file"
-              
+
               # 检查文件是否被修改（即注入了 post_id）
               after_hash=$(sha256sum "$file")
               if [ "$before_hash" != "$after_hash" ]; then
