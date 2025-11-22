@@ -25,14 +25,15 @@
             "id": "9a4347e2d9f7918b",
             "type": "leaf",
             "state": {
-              "type": "markdown",
+              "type": "split-diff-view",
               "state": {
-                "file": "[Debug记录] 分布式实验-FTP编程.md",
-                "mode": "source",
-                "source": false
+                "aFile": "redis入门.md",
+                "bFile": "redis入门.md",
+                "aRef": "HEAD",
+                "bRef": ""
               },
-              "icon": "lucide-file",
-              "title": "[Debug记录] 分布式实验-FTP编程"
+              "icon": "diff",
+              "title": "Diff: redis入门"
             }
           }
         ],
@@ -55,7 +56,7 @@
             "state": {
               "type": "file-explorer",
               "state": {
-                "sortOrder": "alphabetical",
+                "sortOrder": "byModifiedTime",
                 "autoReveal": false
               },
               "icon": "lucide-folder-closed",
@@ -93,7 +94,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 227.5
   },
   "right": {
     "id": "beda8486fe13427b",
@@ -169,13 +170,12 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "[Debug记录] 分布式实验-FTP编程.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "[Debug记录] 分布式实验-FTP编程 的大纲"
+              "title": "大纲"
             }
           },
           {
@@ -207,11 +207,12 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "5162fd647ad9c410",
+  "active": "9a4347e2d9f7918b",
   "lastOpenFiles": [
     "遗传算法.md",
-    "[Debug记录] 分布式实验-FTP编程.md",
+    "redis入门.md",
     "关于Git的多分支使用.md",
+    "[Debug记录] 分布式实验-FTP编程.md",
     "分支限界算法-01背包问题.md",
     "未命名.base"
   ]
