@@ -1,0 +1,80 @@
+name: 博客发布工作流
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'blogs/*.md'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🛎️ Checkout 代码
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🐍 设置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: 📦 安装依赖
+        run: pip install -r scripts/requirements.txt
+
+      - name: 🔄 批量发布所有变更的博客文章
+        env:
+          CNBLOGS_COOKIE: ${{ secrets.CNBLOGS_COOKIE }}
+          CNBLOGS_XSRF_TOKEN: ${{ secrets.CNBLOGS_XSRF_TOKEN }}
+        run: |
+          # 获取本次提交中新增(A)或修改(M)的 blogs/ 下的 .md 文件
+          echo "🔍 正在检测变更的 Markdown 文件..."
+          files=$(git diff --name-only --diff-filter=AM HEAD~1 HEAD | grep '^blogs/.*\.md$')
+          
+          if [ -z "$files" ]; then
+            echo "❌ 未找到符合条件的 .md 文件（新增或修改）"
+            exit 1
+          fi
+
+          echo "✅ 检测到以下文件："
+          echo "$files"
+
+          # 逐个发布
+          any_modified=false
+          while IFS= read -r file; do
+            if [ -n "$file" ] && [ -f "$file" ]; then
+              echo ""
+              echo "📤 正在处理: $file"
+              
+              # 记录发布前的文件状态（用于判断是否注入了 post_id）
+              before_hash=$(sha256sum "$file")
+              
+              # 调用发布脚本
+              python scripts/publish_to_cnblogs.py "$file"
+              
+              # 检查文件是否被修改（即注入了 post_id）
+              after_hash=$(sha256sum "$file")
+              if [ "$before_hash" != "$after_hash" ]; then
+                echo "✨ $file 已更新 post_id"
+                git add "$file"
+                any_modified=true
+              else
+                echo "ℹ️ $file 无变化（可能已是已发布文章）"
+              fi
+            fi
+          done <<< "$files"
+
+          # 如果有文件被修改，提交并推送
+          if [ "$any_modified" = true ]; then
+            echo ""
+            echo "💾 正在提交更新后的文件..."
+            git config --global user.name "github-actions[bot]"
+            git config --global user.email "github-actions[bot]@users.noreply.github.com"
+            git commit -m "chore: auto inject post_id for published posts"
+            git push
+            echo "✅ 已成功推送 post_id 更新！"
+          else
+            echo ""
+            echo "ℹ️ 本次无新文章发布，无需提交。"
+          fi
