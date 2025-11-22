@@ -34,18 +34,11 @@ jobs:
           # 更稳健地获取本次提交中新增(A)或修改(M)的 blogs/ 下的 .md 文件
           echo "🔍 正在检测变更的 Markdown 文件..."
 
-          echo "PREV_COMMIT=$PREV_COMMIT"
-          echo "CUR_COMMIT=$CUR_COMMIT"
-          echo "git diff result:"
-          git diff --name-only --diff-filter=AM "$PREV_COMMIT" "$CUR_COMMIT"
-          echo "ls blogs:"
-          ls -l blogs
-
           # 处理两种情况：普通 push（有上一个 commit）和初始提交（before 为 000...0）
           if [ "$PREV_COMMIT" = "0000000000000000000000000000000000000000" ]; then
-            files=$(git ls-tree -r --name-only "$CUR_COMMIT" | grep '^blogs/.*\.md$' || true)
+            files=$(git -c core.quotepath=false ls-tree -r --name-only "$CUR_COMMIT" | grep '^blogs/.*\.md$' || true)
           else
-            files=$(git diff --name-only --diff-filter=AM "$PREV_COMMIT" "$CUR_COMMIT" | grep '^blogs/.*\.md$' || true)
+            files=$(git -c core.quotepath=false diff --name-only --diff-filter=AM "$PREV_COMMIT" "$CUR_COMMIT" | grep '^blogs/.*\.md$' || true)
           fi
 
           if [ -z "$files" ]; then
