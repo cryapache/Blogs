@@ -11,10 +11,14 @@
             "id": "19a71e10df9d55ff",
             "type": "leaf",
             "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "关系图谱"
+              "type": "markdown",
+              "state": {
+                "file": "关于Git的多分支使用.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "关于Git的多分支使用"
             }
           }
         ]
@@ -49,7 +53,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "",
+                "query": "tag:gitee",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -150,12 +154,13 @@
             "state": {
               "type": "outline",
               "state": {
+                "file": "关于Git的多分支使用.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "大纲"
+              "title": "关于Git的多分支使用 的大纲"
             }
           },
           {
@@ -189,8 +194,10 @@
   },
   "active": "19a71e10df9d55ff",
   "lastOpenFiles": [
+    "使用脚本将笔记同步更新到博客上.md",
+    "关于Git的多分支使用.md",
+    "redis入门.md",
     "[Debug记录] 分布式实验-FTP编程.md",
-    "未命名.base",
-    "关于Git的多分支使用.md"
+    "未命名.base"
   ]
 }

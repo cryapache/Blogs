@@ -38,3 +38,22 @@ git push origin exBranch
 ```
 - 在远程仓库中创建一个从`exBranch` -> `master` 的 `Pull Request`
 - 代码审查等通过后合并
+
+#### 合并时解决冲突
+如果a分支推送到远程并发出pull request，在a审查的过程中b分支也推送到远程发送pull request，且a和b分支存在冲突。此时b是不能直接合并到master分支的，应该由审查打回后，由b重新修改后推送：
+```
+# 1. 切换到 b 分支 
+git checkout b
+
+# 2. 拉取最新 master 
+git fetch origin 
+git rebase origin/master 
+
+# 3. 手动解决冲突（如果有） 
+# - 编辑冲突文件 
+# - git add <resolved-file> 
+# - git rebase --continue 
+
+# 4. 强制推送到远程 bb 分支（因为 rebase 改写了历史） 
+git push --force-with-lease origin b
+```
