@@ -183,9 +183,10 @@ def publish_or_update(title: str, content: str, tags: list, is_draft: bool, post
     }
 
     if post_id:
-        original = get_post(post_id)
-        if not original:
-            raise RuntimeError(f"无法获取原文信息，ID: {post_id}")
+    original = get_post(post_id)
+    if not original:
+        print(f"⚠️ 原文章 ID={post_id} 不存在或无权访问，将作为新文章发布", file=sys.stderr)
+        post_id = None  # 清除无效 ID，转为新建
 
         payload["id"] = post_id
         # 直接使用原始 datePublished（格式为 "2025-11-22T13:15:00.000Z"）
