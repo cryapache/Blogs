@@ -183,7 +183,7 @@ def publish_or_update(title: str, content: str, tags: list, is_draft: bool, post
     }
 
     if post_id:
-    original = get_post(post_id)
+        original = get_post(post_id)
     if not original:
         print(f"⚠️ 原文章 ID={post_id} 不存在或无权访问，将作为新文章发布", file=sys.stderr)
         post_id = None  # 清除无效 ID，转为新建
