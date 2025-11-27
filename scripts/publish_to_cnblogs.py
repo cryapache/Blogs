@@ -11,7 +11,6 @@ import os
 import re
 import yaml
 import requests
-from datetime import datetime, timezone
 from pathlib import Path
 
 # ==============================
@@ -152,7 +151,7 @@ def _send_request(url: str, payload: dict, method: str = "POST"):
     resp = requests.request(method, url, headers=headers, json=payload, timeout=30)
     if resp.status_code in (200, 201):
         data = resp.json()
-        action = "更新" if "id" in payload and payload["id"] else "发布"
+        action = "更新" if payload.get("id") else "发布"
         print(f"✅ {action}成功！ID: {data['id']}")
         print(f"🔗 链接: {data['url']}")
         return data
@@ -166,7 +165,6 @@ def _send_request(url: str, payload: dict, method: str = "POST"):
 # 🚀 统一发布/更新函数
 # ==============================
 def publish_or_update(title: str, content: str, tags: list, is_draft: bool, post_id: int = None):
-    url = "https://i.cnblogs.com/api/posts"
     payload = {
         "title": title,
         "postBody": content,
@@ -181,24 +179,29 @@ def publish_or_update(title: str, content: str, tags: list, is_draft: bool, post
         "tags": tags,
         "usingEditorId": 5,
     }
-    
-    original = None
 
+    original = None
     if post_id:
         original = get_post(post_id)
-    if not original:
-        print(f"⚠️ 原文章 ID={post_id} 不存在或无权访问，将作为新文章发布", file=sys.stderr)
-        post_id = None  # 清除无效 ID，转为新建
 
+    if original:
+        # 更新已有文章：保留原始元数据
         payload["id"] = post_id
-        # 直接使用原始 datePublished（格式为 "2025-11-22T13:15:00.000Z"）
         if original.get("datePublished"):
             payload["datePublished"] = original["datePublished"]
-        # 补充其他字段（非必需，但更贴近浏览器行为）
         for key in ["author", "blogId", "url"]:
             if key in original:
                 payload[key] = original[key]
+    else:
+        # 发布新文章：不设置 id 或 datePublished
+        if post_id is not None:
+            print(f"⚠️ 原文章 ID={post_id} 不存在或无权访问，将作为新文章发布", file=sys.stderr)
+        # 新文章 payload 中不应包含 id 字段（可选，但更规范）
+        # 如果保留 "id": null 可能被忽略，但为清晰起见我们不设它
+        if "id" in payload:
+            del payload["id"]
 
+    url = "https://i.cnblogs.com/api/posts"
     return _send_request(url, payload, method="POST")
 
 
