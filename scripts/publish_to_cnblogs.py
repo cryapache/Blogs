@@ -181,6 +181,8 @@ def publish_or_update(title: str, content: str, tags: list, is_draft: bool, post
         "tags": tags,
         "usingEditorId": 5,
     }
+    
+    original = None
 
     if post_id:
         original = get_post(post_id)
