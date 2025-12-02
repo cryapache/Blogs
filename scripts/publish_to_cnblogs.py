@@ -172,7 +172,7 @@ def publish_or_update(title: str, content: str, tags: list, is_draft: bool, post
         "isDraft": is_draft,
         "isPublished": not is_draft,
         "postType": 1,
-        "accessPermission": 268435456,
+        "accessPermission": 1,
         "includeInMainSyndication": True,
         "displayOnHomePage": True,
         "isAllowComments": True,
